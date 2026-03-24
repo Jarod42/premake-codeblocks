@@ -38,8 +38,8 @@
 			if filecfg1.buildaction ~= filecfg2.buildaction then
 				return false, "buildaction"
 			end
-			if filecfg1.flags.ExcludeFromBuild ~= filecfg2.flags.ExcludeFromBuild then
-				return false, 'flags {"ExcludeFromBuild"}'
+			if filecfg1.excludefrombuild ~= filecfg2.excludefrombuild then
+				return false, "excludefrombuild"
 			end
 			if filecfg1.buildmessage ~= filecfg2.buildmessage then
 				return false, "buildmessage"

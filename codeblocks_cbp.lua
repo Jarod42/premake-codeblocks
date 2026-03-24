@@ -139,7 +139,7 @@
 
 				if (cfg.kind == "SharedLib") then
 					_p(4,'<Option createDefFile="0" />')
-					_p(4,'<Option createStaticLib="%s" />', iif(cfg.flags.NoImportLib, 0, 1))
+					_p(4,'<Option createStaticLib="%s" />', iif(cfg.useimportlib, 0, 1))
 				end
 
 				-- begin compiler block --
@@ -147,7 +147,7 @@
 				for _,flag in ipairs(table.join(compiler.getcflags(cfg), compiler.getcxxflags(cfg), compiler.getdefines(cfg.defines), compiler.getundefines(cfg.undefines), cfg.buildoptions)) do
 					_p(5,'<Add option="%s" />', p.esc(flag))
 				end
-				if not cfg.flags.NoPCH and cfg.pchheader then
+				if cfg.enablepch ~= p.OFF and cfg.pchheader then
 					_p(5,'<Add option="-Winvalid-pch" />')
 					_p(5,'<Add option="-include &quot;%s&quot;" />', p.esc(cfg.pchheader))
 				end
@@ -259,7 +259,7 @@
 				local filecfg = p.fileconfig.getconfig(node, cfg)
 				if path.isresourcefile(node.name) then
 					_p(3,'<Option compilerVar="WINDRES" />')
-				elseif filecfg.flags.ExcludeFromBuild or filecfg.buildaction == "None" then
+				elseif filecfg.excludefrombuild or filecfg.buildaction == "None" then
 					_p(3, '<Option compile="0" />')
 					_p(3, '<Option link="0" />')
 				elseif (node.compileas and node.compileas ~= "Default") or p.fileconfig.hasFileSettings(filecfg) then
@@ -279,7 +279,7 @@
 				elseif path.iscfile(node.name) and prj.language == "C++" then
 					_p(3,'<Option compilerVar="CC" />')
 				end
-				if not prj.flags.NoPCH and node.name == pchheader then
+				if prj.enablepch ~= p.OFF and node.name == pchheader then
 					_p(3,'<Option compilerVar="%s" />', iif(prj.language == "C", "CC", "CPP"))
 					_p(3,'<Option compile="1" />')
 					_p(3,'<Option weight="0" />')
